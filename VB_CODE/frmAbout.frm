@@ -2,7 +2,7 @@ VERSION 5.00
 Begin VB.Form frmAbout 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "About Folder Locker"
-   ClientHeight    =   3975
+   ClientHeight    =   4545
    ClientLeft      =   2340
    ClientTop       =   1935
    ClientWidth     =   6720
@@ -11,7 +11,7 @@ Begin VB.Form frmAbout
    LinkTopic       =   "Form2"
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   2743.616
+   ScaleHeight     =   3137.04
    ScaleMode       =   0  'User
    ScaleWidth      =   6310.427
    ShowInTaskbar   =   0   'False
@@ -27,7 +27,7 @@ Begin VB.Form frmAbout
       ScaleMode       =   0  'User
       ScaleWidth      =   1348.48
       TabIndex        =   1
-      Top             =   360
+      Top             =   480
       Width           =   1980
    End
    Begin VB.CommandButton cmdOK 
@@ -46,7 +46,7 @@ Begin VB.Form frmAbout
       Height          =   345
       Left            =   5040
       TabIndex        =   0
-      Top             =   3000
+      Top             =   3600
       Width           =   1260
    End
    Begin VB.CommandButton cmdSysInfo 
@@ -63,8 +63,43 @@ Begin VB.Form frmAbout
       Height          =   345
       Left            =   5040
       TabIndex        =   2
-      Top             =   3480
+      Top             =   4080
       Width           =   1245
+   End
+   Begin VB.Label Label5 
+      Caption         =   "VISIT :"
+      BeginProperty Font 
+         Name            =   "Palatino Linotype"
+         Size            =   9.75
+         Charset         =   0
+         Weight          =   700
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      Height          =   255
+      Left            =   360
+      TabIndex        =   11
+      Top             =   2760
+      Width           =   1815
+   End
+   Begin VB.Label Label4 
+      Caption         =   "https://github.com/shuvankarroy/Private-Folder-Locker"
+      BeginProperty Font 
+         Name            =   "Palatino Linotype"
+         Size            =   11.25
+         Charset         =   0
+         Weight          =   700
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   &H8000000D&
+      Height          =   375
+      Left            =   360
+      TabIndex        =   10
+      Top             =   3000
+      Width           =   6135
    End
    Begin VB.Label Label3 
       Caption         =   "Author : Shuvankar Roy"
@@ -121,10 +156,10 @@ Begin VB.Form frmAbout
       BorderColor     =   &H00808080&
       BorderStyle     =   6  'Inside Solid
       Index           =   1
-      X1              =   225.372
-      X2              =   5972.368
-      Y1              =   1987.827
-      Y2              =   1987.827
+      X1              =   338.059
+      X2              =   6085.054
+      Y1              =   2401.958
+      Y2              =   2401.958
    End
    Begin VB.Label lblDescription 
       Caption         =   $"frmAbout.frx":21094
@@ -203,7 +238,7 @@ Begin VB.Form frmAbout
       Height          =   825
       Left            =   240
       TabIndex        =   4
-      Top             =   3000
+      Top             =   3600
       Width           =   3870
    End
 End
@@ -340,3 +375,6 @@ GetKeyError:      ' Cleanup After An Error Has Occured...
     rc = RegCloseKey(hKey)                                  ' Close Registry Key
 End Function
 
+Private Sub Label4_Click()
+    CreateObject("Wscript.Shell").Run "https://github.com/shuvankarroy/Private-Folder-Locker"
+End Sub
