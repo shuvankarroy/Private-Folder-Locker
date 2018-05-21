@@ -143,6 +143,7 @@ Dim k As Integer
 
 Private Sub cmdCancel_Click()
     frmLogin.Visible = False
+    Unload Me
 End Sub
 
 Private Sub cmdOK_Click()
@@ -166,11 +167,13 @@ Private Sub cmdOK_Click()
             pass1 = write_file(App.Path + "/Folder_lock_data/UserName.txt", encrypt(user))
             pass2 = write_file(App.Path + "/Folder_lock_data/Password.txt", encrypt(pass))
             MsgBox "Username and Password changed Successfully", vbOKOnly, "Success"
+            Unload Me
         Else
             k = 3
             frmLogin.txtUserName = ""
             frmLogin.txtPassword = ""
             MsgBox "Wrong Username or Password . Change Username & Password Incomplete . Provide Correct Username And Password And Try Again...!!!", vbCritical, "Incomplete Action"
+            Unload Me
         End If
     End If
 If (k = 1) Then
@@ -178,6 +181,7 @@ error_usr_change:
     frmLogin.txtUserName = ""
     frmLogin.txtPassword = ""
     MsgBox "Secure Folder Was Not Created. Create Secure Folder First and Then Try Again .....!!!", vbCritical, "Incomplete Action"
+    Unload Me
 End If
 End Sub
 

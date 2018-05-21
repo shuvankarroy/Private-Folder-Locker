@@ -31,3 +31,4 @@ INSTRUCTION:
 4) Before Creating Any Secure Folder You Can Change Your Secure Folder Name.
 5) User Can Change His Username and Password At Any Point Of Time by Providing The Correct Current Username & Password.
 6) In Windows 10 or Windows 8 Environment The Program May Crashes Due To Non-availability of comdlg32.ocx. Follow Provided Instructions To Fix This Issue In “OS Fix” Folder. 
+7) When Using Folder Locker In USB devices , Please Enable The Check Box Named "USB MODE" For Flawless Usage Each Time.

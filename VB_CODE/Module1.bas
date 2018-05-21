@@ -49,4 +49,8 @@ Function check(a As String, b As String) As Integer
         check = 0
     End If
 End Function
-
+Public Function isRunningExe(exeName As String) As Boolean
+   Dim strQuery As String
+   strQuery = "SELECT Name FROM Win32_Process WHERE Name='" & exeName & "'"
+   isRunningExe = GetObject("winmgmts:").ExecQuery(strQuery).Count
+End Function

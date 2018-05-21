@@ -95,17 +95,20 @@ Private Sub Command1_Click()
     pass = decrypt(read_file(App.Path + "/Folder_lock_data/Password.txt"))
     MsgBox "Secure Folder Was Already Created . It Is Not Possible To Change The Secure Folder Name ...!!!", vbCritical, "Error In File Creation"
     Text1.Text = ""
+    Unload Me
 If l = 0 Then
 error_handle_newname:
     prev = decrypt(read_file(App.Path + "/Folder_lock_data/dirname.txt"))
     x = write_file(App.Path + "/Folder_lock_data/dirname.txt", encrypt(Text1.Text))
     MsgBox "Secure Folder Name Has Been Changed From " + prev + " To " + Text1.Text, vbOKOnly
     Text1.Text = ""
+    Unload Me
 End If
 End Sub
 
 Private Sub Command2_Click()
     Me.Hide
     MsgBox "Secure Folder Name Change Is Interrupted", vbOKOnly
+    Unload Me
 End Sub
 

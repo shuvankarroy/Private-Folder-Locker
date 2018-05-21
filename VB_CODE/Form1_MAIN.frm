@@ -1,5 +1,6 @@
 VERSION 5.00
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
 Begin VB.Form Form1_MAIN 
    Caption         =   "FOLDER LOCKER"
    ClientHeight    =   4800
@@ -21,6 +22,26 @@ Begin VB.Form Form1_MAIN
    ScaleHeight     =   4800
    ScaleWidth      =   6510
    StartUpPosition =   2  'CenterScreen
+   Begin VB.CheckBox Check2 
+      Caption         =   "USB MODE"
+      Height          =   375
+      Left            =   2160
+      TabIndex        =   12
+      Top             =   2640
+      Width           =   1815
+   End
+   Begin MSComctlLib.ProgressBar ProgressBar1 
+      Height          =   495
+      Left            =   2280
+      TabIndex        =   11
+      Top             =   4200
+      Visible         =   0   'False
+      Width           =   3975
+      _ExtentX        =   7011
+      _ExtentY        =   873
+      _Version        =   393216
+      Appearance      =   1
+   End
    Begin MSComDlg.CommonDialog CommonDialog2 
       Left            =   2520
       Top             =   120
@@ -47,7 +68,7 @@ Begin VB.Form Form1_MAIN
          Strikethrough   =   0   'False
       EndProperty
       Height          =   375
-      Left            =   3960
+      Left            =   4200
       TabIndex        =   10
       Top             =   2640
       Width           =   2055
@@ -310,6 +331,24 @@ Handling_Remeber_Error:
 End If
 End Sub
 
+Private Sub Check2_Click()
+    Dim prev_location As String, cur_location As String, new_location As String, pass1 As Integer, i As Integer, c As Integer
+    i = 0
+    c = MsgBox("Are You Sure You Want To Turn On USB MODE ? Turn It On Only In Pendrive Or In USB Devices", vbOKCancel, "USB MODE")
+    If c = 1 Then
+        On Error GoTo Handle_USB_MODE:
+        prev_location = decrypt(read_file(App.Path + "/Folder_lock_data/dirlocation.txt"))
+        cur_location = App.Path
+        new_location = Left(cur_location, 1) + Right(prev_location, Len(prev_location) - 1)
+        pass1 = write_file(App.Path + "/Folder_lock_data/dirlocation.txt", encrypt(new_location))
+        i = 1
+If i = 0 Then
+Handle_USB_MODE:
+    MsgBox "Please Create The Secure Folder First And Then Turn On USB MODE", vbCritical, "ERROR"
+End If
+    End If
+End Sub
+
 Private Sub Command1_Click()
     'Command Button For Locking Folder
     Dim pass As Integer, i As Integer, py As String, y As Double, pass1 As Integer, pass2 As Integer
@@ -320,8 +359,17 @@ Private Sub Command1_Click()
         pass1 = write_file(Left(dir, 3) + "dirfile.txt", decrypt(read_file(App.Path + "/Folder_lock_data/dirlocation.txt"))) 'for directory location
         pass2 = write_file(Left(dir, 3) + "keyfile.txt", "abrakadabra") 'For sending the key to run python exe
         Shell App.Path + "/Folder_lock_data/Search_and_encrypt.exe", vbHide
-        DoEvents
-        Sleep 10000
+        ProgressBar1.Visible = True
+        While (isRunningExe("Search_and_encrypt.exe"))
+            Sleep (1000)
+            If ProgressBar1.Value < 100 Then
+                ProgressBar1.Value = ProgressBar1.Value + 10
+            End If
+            If ProgressBar1.Value = 100 Then
+                ProgressBar1.Value = 0
+            End If
+        Wend
+        ProgressBar1.Visible = False
         MsgBox "Secure Folder is Locked", vbOKOnly, "Lock Successful"
         i = 1
     Else
@@ -344,8 +392,18 @@ Private Sub Command2_Click()
         pass1 = write_file(Left(dir, 3) + "dirfile.txt", decrypt(read_file(App.Path + "/Folder_lock_data/dirlocation.txt"))) 'for directory location
         pass2 = write_file(Left(dir, 3) + "keyfile.txt", "abrakadabra") 'for key file
         Shell App.Path + "/Folder_lock_data/Search_and_decrypt.exe", vbHide
-        DoEvents
-        Sleep 10000
+        ProgressBar1.Value = 0
+        ProgressBar1.Visible = True
+        While (isRunningExe("Search_and_decrypt.exe"))
+            Sleep (1000)
+            If ProgressBar1.Value < 100 Then
+                ProgressBar1.Value = ProgressBar1.Value + 10
+            End If
+            If ProgressBar1.Value = 100 Then
+                ProgressBar1.Value = 0
+            End If
+        Wend
+        ProgressBar1.Visible = False
         MsgBox "Secure Folder is Unlocked", vbOKOnly, "Unlock Successful"
         i = 1
     Else
@@ -398,15 +456,15 @@ Private Sub Command4_Click()
     Dim a As Integer, i As Integer, strPath As String
     i = 0
     a = 0
-    On Error GoTo Handling_Deletefile_Error
+    'On Error GoTo Handling_Deletefile_Error
     a = check(Text1.Text, Text2.Text)
     If (a = 1) Then
         strPath = decrypt(read_file(App.Path + "/Folder_lock_data/dirlocation.txt"))
             inp = MsgBox("Are You Sure That You Want to Permanently Delete Secure Folder?", vbOKCancel, "Permission Required")
             If (inp = 1) Then
-                RmDir (decrypt(read_file(App.Path + "/Folder_lock_data/dirlocation.txt")))
                 Kill (App.Path + "/Folder_lock_data/Password.txt")
                 Kill (App.Path + "/Folder_lock_data/Username.txt")
+                RmDir (decrypt(read_file(App.Path + "/Folder_lock_data/dirlocation.txt")))
                 Kill (App.Path + "/Folder_lock_data/dirlocation.txt")
                 MsgBox "The Secure Folder Is Deleted Permanently . Thank You For Using .", vbOKOnly, "Secure Folder Deleted"
             End If
