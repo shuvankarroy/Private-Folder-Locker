@@ -207,7 +207,7 @@ Begin VB.Form frmAbout
       Y2              =   1697.936
    End
    Begin VB.Label lblVersion 
-      Caption         =   "VERSION : 1.0.0.0"
+      Caption         =   "VERSION : 1.0.0.1"
       BeginProperty Font 
          Name            =   "Palatino Linotype"
          Size            =   9.75

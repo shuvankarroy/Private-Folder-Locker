@@ -98,11 +98,16 @@ Private Sub Command1_Click()
     Unload Me
 If l = 0 Then
 error_handle_newname:
-    prev = decrypt(read_file(App.Path + "/Folder_lock_data/dirname.txt"))
-    x = write_file(App.Path + "/Folder_lock_data/dirname.txt", encrypt(Text1.Text))
-    MsgBox "Secure Folder Name Has Been Changed From " + prev + " To " + Text1.Text, vbOKOnly
-    Text1.Text = ""
-    Unload Me
+    If (Len(Text1.Text) > 0) Then
+        prev = decrypt(read_file(App.Path + "/Folder_lock_data/dirname.txt"))
+        x = write_file(App.Path + "/Folder_lock_data/dirname.txt", encrypt(Text1.Text))
+        MsgBox "Secure Folder Name Has Been Changed From " + prev + " To " + Text1.Text, vbOKOnly, "Secure Folder Name"
+        Text1.Text = ""
+        Unload Me
+    Else
+        MsgBox "Secure Folder Name Can Not Be Empty . Try Again With A Valid Name . Do Not Use Any Special Character", vbCritical, "Secure Folder Name"
+        Unload Me
+    End If
 End If
 End Sub
 

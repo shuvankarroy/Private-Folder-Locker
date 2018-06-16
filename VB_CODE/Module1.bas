@@ -54,3 +54,21 @@ Public Function isRunningExe(exeName As String) As Boolean
    strQuery = "SELECT Name FROM Win32_Process WHERE Name='" & exeName & "'"
    isRunningExe = GetObject("winmgmts:").ExecQuery(strQuery).Count
 End Function
+Public Function IsFolderEmpty(ByVal strPath As String) As Boolean
+    Dim s As String
+    'add final slash from path
+    If Right(strPath, 1) <> "\" Then strPath = strPath & "\"
+    'check directory contents (files and subfolders)
+    s = dir(strPath, vbNormal Or vbDirectory)
+    IsFolderEmpty = True
+    Do While s <> ""
+        'if the directory contains something other than system folders
+        'then it's not empty
+        If s <> "." And s <> ".." Then
+            IsFolderEmpty = False
+            Exit Do
+        End If
+        'continue enum
+        s = dir
+    Loop
+End Function

@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
 Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
 Begin VB.Form Form1_MAIN 
    Caption         =   "FOLDER LOCKER"
@@ -351,27 +351,33 @@ End Sub
 
 Private Sub Command1_Click()
     'Command Button For Locking Folder
-    Dim pass As Integer, i As Integer, py As String, y As Double, pass1 As Integer, pass2 As Integer
+    Dim i As Integer, py As String, y As Double, pass1 As Integer, pass2 As Integer, pass3 As Integer
     i = 0
     On Error GoTo Handling_Nofile_Error
-    pass = check(Text1.Text, Text2.Text)
-    If (pass = 1) Then
-        pass1 = write_file(Left(dir, 3) + "dirfile.txt", decrypt(read_file(App.Path + "/Folder_lock_data/dirlocation.txt"))) 'for directory location
-        pass2 = write_file(Left(dir, 3) + "keyfile.txt", "abrakadabra") 'For sending the key to run python exe
-        Shell App.Path + "/Folder_lock_data/Search_and_encrypt.exe", vbHide
-        ProgressBar1.Visible = True
-        While (isRunningExe("Search_and_encrypt.exe"))
-            Sleep (1000)
-            If ProgressBar1.Value < 100 Then
-                ProgressBar1.Value = ProgressBar1.Value + 10
-            End If
-            If ProgressBar1.Value = 100 Then
-                ProgressBar1.Value = 0
-            End If
-        Wend
-        ProgressBar1.Visible = False
-        MsgBox "Secure Folder is Locked", vbOKOnly, "Lock Successful"
-        i = 1
+    If (check(Text1.Text, Text2.Text) = 1) Then
+    MsgBox decrypt(read_file(App.Path + "/Folder_lock_data/status.txt")) + "/////"
+        If (decrypt(read_file(App.Path + "/Folder_lock_data/status.txt")) = "UNLOCKED") Then
+            pass1 = write_file(Left(dir, 3) + "dirfile.txt", decrypt(read_file(App.Path + "/Folder_lock_data/dirlocation.txt"))) 'for directory location
+            pass2 = write_file(Left(dir, 3) + "keyfile.txt", "abrakadabra") 'For sending the key to run python exe
+            Shell App.Path + "/Folder_lock_data/Search_and_encrypt.exe", vbHide
+            ProgressBar1.Visible = True
+            While (isRunningExe("Search_and_encrypt.exe"))
+                Sleep (1000)
+                If ProgressBar1.Value < 100 Then
+                    ProgressBar1.Value = ProgressBar1.Value + 10
+                End If
+                If ProgressBar1.Value = 100 Then
+                    ProgressBar1.Value = 0
+                End If
+            Wend
+            ProgressBar1.Visible = False
+            pass3 = write_file(App.Path + "/Folder_lock_data/status.txt", encrypt("LOCKED"))
+            MsgBox "Secure Folder is Locked", vbOKOnly, "Lock Successful"
+            i = 1
+        Else
+            MsgBox "Secure Folder is Already Locked", vbOKOnly, "Lock Error"
+            i = 1
+        End If
     Else
         MsgBox "Wrong Username and Password . Provide Correct Username and Password and Try Again....!!!", vbCritical, "Error"
         i = 1
@@ -384,28 +390,34 @@ End Sub
 
 Private Sub Command2_Click()
     'Command Button For Unlocking Folder
-    Dim a As Integer, key As String, i As Integer
+    Dim key As String, i As Integer
     i = 0
     On Error GoTo Handling_Nofile_Error
-    a = check(Text1.Text, Text2.Text)
-    If (a = 1) Then
-        pass1 = write_file(Left(dir, 3) + "dirfile.txt", decrypt(read_file(App.Path + "/Folder_lock_data/dirlocation.txt"))) 'for directory location
-        pass2 = write_file(Left(dir, 3) + "keyfile.txt", "abrakadabra") 'for key file
-        Shell App.Path + "/Folder_lock_data/Search_and_decrypt.exe", vbHide
-        ProgressBar1.Value = 0
-        ProgressBar1.Visible = True
-        While (isRunningExe("Search_and_decrypt.exe"))
-            Sleep (1000)
-            If ProgressBar1.Value < 100 Then
-                ProgressBar1.Value = ProgressBar1.Value + 10
-            End If
-            If ProgressBar1.Value = 100 Then
-                ProgressBar1.Value = 0
-            End If
-        Wend
-        ProgressBar1.Visible = False
-        MsgBox "Secure Folder is Unlocked", vbOKOnly, "Unlock Successful"
-        i = 1
+    MsgBox decrypt(read_file(App.Path + "/Folder_lock_data/status.txt")) + "/////"
+    If (check(Text1.Text, Text2.Text) = 1) Then
+        If (decrypt(read_file(App.Path + "/Folder_lock_data/status.txt")) = "LOCKED") Then
+            pass1 = write_file(Left(dir, 3) + "dirfile.txt", decrypt(read_file(App.Path + "/Folder_lock_data/dirlocation.txt"))) 'for directory location
+            pass2 = write_file(Left(dir, 3) + "keyfile.txt", "abrakadabra") 'for key file
+            Shell App.Path + "/Folder_lock_data/Search_and_decrypt.exe", vbHide
+            ProgressBar1.Value = 0
+            ProgressBar1.Visible = True
+            While (isRunningExe("Search_and_decrypt.exe"))
+                Sleep (1000)
+                If ProgressBar1.Value < 100 Then
+                    ProgressBar1.Value = ProgressBar1.Value + 10
+                End If
+                If ProgressBar1.Value = 100 Then
+                    ProgressBar1.Value = 0
+                End If
+            Wend
+            ProgressBar1.Visible = False
+            pass3 = write_file(App.Path + "/Folder_lock_data/status.txt", encrypt("UNLOCKED"))
+            MsgBox "Secure Folder is Unlocked", vbOKOnly, "Unlock Successful"
+            i = 1
+        Else
+            MsgBox "Secure Folder is Already Unlocked", vbOKOnly, "Unlock Error"
+            i = 1
+        End If
     Else
         MsgBox "Wrong Username and Password . Provide Correct Username and Password and Try Again....!!!", vbCritical, "Error"
         i = 1
@@ -442,6 +454,7 @@ Create:
                 DoEvents
                 Sleep 1000
                 If (pass1 = 1 And pass2 = 1) Then
+                    pass3 = write_file(App.Path + "/Folder_lock_data/status.txt", encrypt("UNLOCKED"))
                     MsgBox "Secure Folder Is Created In Curent Directory And It Is Ready To Use .", vbOKOnly, "Secure Folder Created"
                 End If
             Else
@@ -453,29 +466,38 @@ End Sub
 
 Private Sub Command4_Click()
     'Command Button For Deleting Secure Folder
-    Dim a As Integer, i As Integer, strPath As String
+    Dim a As Integer, i As Integer, strPath As String, b As Boolean
     i = 0
-    a = 0
-    'On Error GoTo Handling_Deletefile_Error
-    a = check(Text1.Text, Text2.Text)
-    If (a = 1) Then
-        strPath = decrypt(read_file(App.Path + "/Folder_lock_data/dirlocation.txt"))
+    On Error GoTo Handling_Deletefile_Error
+    If (check(Text1.Text, Text2.Text) = 1) Then
+        If (decrypt(read_file(App.Path + "/Folder_lock_data/status.txt")) = "UNLOCKED") Then
+            strPath = decrypt(read_file(App.Path + "/Folder_lock_data/dirlocation.txt"))
             inp = MsgBox("Are You Sure That You Want to Permanently Delete Secure Folder?", vbOKCancel, "Permission Required")
             If (inp = 1) Then
-                Kill (App.Path + "/Folder_lock_data/Password.txt")
-                Kill (App.Path + "/Folder_lock_data/Username.txt")
-                RmDir (decrypt(read_file(App.Path + "/Folder_lock_data/dirlocation.txt")))
-                Kill (App.Path + "/Folder_lock_data/dirlocation.txt")
-                MsgBox "The Secure Folder Is Deleted Permanently . Thank You For Using .", vbOKOnly, "Secure Folder Deleted"
+                If (IsFolderEmpty(decrypt(read_file(App.Path + "/Folder_lock_data/dirlocation.txt"))) = True) Then
+                    Kill (App.Path + "/Folder_lock_data/Password.txt")
+                    Kill (App.Path + "/Folder_lock_data/Username.txt")
+                    Kill (App.Path + "/Folder_lock_data/status.txt")
+                    RmDir (decrypt(read_file(App.Path + "/Folder_lock_data/dirlocation.txt")))
+                    Kill (App.Path + "/Folder_lock_data/dirlocation.txt")
+                    MsgBox "The Secure Folder Is Deleted Permanently . Thank You For Using .", vbOKOnly, "Secure Folder Deleted"
+                    i = 1
+                Else
+                    i = 1
+                    MsgBox "Secure Folder Is not Empty .Delete All Your Belongings First", vbCritical, "Error In Deletion"
+                End If
             End If
+        Else
+            MsgBox "Unlock Secure Folder First And Then Try Again.", vbCritical, "Error In Deletion"
             i = 1
+        End If
     Else
         MsgBox "Wrong Username And Password . Secure Folder Deletion Incomplete . Provide Correct Username And Password And Try Again...!!!", vbCritical, "Error In Deletion"
         i = 1
     End If
 If (i = 0) Then
 Handling_Deletefile_Error:
-    MsgBox "Secure Folder Was Not Created or It might be hidden or It may Contain Some Informations . Please Unhide/Unlock The Folder or Create Secure Folder First or Delete All Your Belongings and Then Try Again .....!!!", vbCritical, "Incomplete Action"
+    MsgBox "Secure Folder Was Not Created . Create Secure Folder First and Then Try Again .....!!!", vbCritical, "Incomplete Action"
 End If
 End Sub
 
